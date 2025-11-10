@@ -101,6 +101,11 @@ def save_settings():
 def auto_save_event(_=None):
     app.after(300, save_settings)
 
+def on_active_pos_change(value):
+    global active_pos1
+    active_pos1 = value
+    app.after(300, save_settings)
+
 def start_listener():
     listener = keyboard.Listener(on_press=on_press)
     listener.daemon = True
@@ -111,14 +116,14 @@ app = ctk.CTk()
 app.title("CS2 Auto Reporter")
 app.geometry("420x950")
 
-frame = ctk.CTkFrame(app, width=400, height=950)
+frame = ctk.CTkFrame(app, width=400, height=850)
 frame.pack(padx=5, pady=5, fill="both", expand=True)
 
 ctk.CTkLabel(frame, text="Active Position 1:").pack(pady=(4, 0))
-combo_pos1 = ctk.CTkOptionMenu(frame, values=[f"Player_{i}" for i in range(1, 11)])
+combo_pos1 = ctk.CTkOptionMenu(frame, values=[f"Player_{i}" for i in range(1, 11)],
+                               command=on_active_pos_change)
 combo_pos1.set(active_pos1)
 combo_pos1.pack(pady=2)
-combo_pos1.bind("<<ComboboxSelected>>", auto_save_event)
 
 Player_entries = []
 for i in range(10):
@@ -161,3 +166,4 @@ key_entry.bind("<KeyRelease>", auto_save_event)
 
 start_listener()
 app.mainloop()
+
